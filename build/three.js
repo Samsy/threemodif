@@ -20255,63 +20255,6 @@
 
 			// morph targets
 
-			var morphTargetInfluences = object.morphTargetInfluences;
-
-			if ( morphTargetInfluences !== undefined ) {
-
-				var activeInfluences = [];
-
-				for ( var i = 0, l = morphTargetInfluences.length; i < l; i ++ ) {
-
-					var influence = morphTargetInfluences[ i ];
-					activeInfluences.push( [ influence, i ] );
-
-				}
-
-				activeInfluences.sort( absNumericalSort );
-
-				if ( activeInfluences.length > 8 ) {
-
-					activeInfluences.length = 8;
-
-				}
-
-				var morphAttributes = geometry.morphAttributes;
-
-				for ( var i = 0, l = activeInfluences.length; i < l; i ++ ) {
-
-					var influence = activeInfluences[ i ];
-					morphInfluences[ i ] = influence[ 0 ];
-
-					if ( influence[ 0 ] !== 0 ) {
-
-						var index = influence[ 1 ];
-
-						if ( material.morphTargets === true && morphAttributes.position ) geometry.addAttribute( 'morphTarget' + i, morphAttributes.position[ index ] );
-						if ( material.morphNormals === true && morphAttributes.normal ) geometry.addAttribute( 'morphNormal' + i, morphAttributes.normal[ index ] );
-
-					} else {
-
-						if ( material.morphTargets === true ) geometry.removeAttribute( 'morphTarget' + i );
-						if ( material.morphNormals === true ) geometry.removeAttribute( 'morphNormal' + i );
-
-					}
-
-				}
-
-				for ( var i = activeInfluences.length, il = morphInfluences.length; i < il; i ++ ) {
-
-					morphInfluences[ i ] = 0.0;
-
-				}
-
-				program.getUniforms().setValue(
-					_gl, 'morphTargetInfluences', morphInfluences );
-
-				updateBuffers = true;
-
-			}
-
 			//
 
 			var index = geometry.index;
@@ -20799,6 +20742,47 @@
 			// _gl.finish();
 
 		};
+
+		this.renderLIGHT = function (camera, mesh, renderTarget) {
+
+			_infoRender.calls++;
+
+			if ( renderTarget === undefined ) {
+
+				renderTarget = null;
+
+			}
+
+			this.setRenderTarget( renderTarget );
+
+			objects.update( mesh );
+
+			_this.renderBufferDirectLIGHT( camera, null, mesh.geometry, mesh.material, mesh, null );
+
+			state.setDepthTest( true );
+			state.setDepthWrite( true );
+			state.setColorWrite( true );
+
+		};
+
+		this.renderBufferDirectLIGHT = function ( camera, fog, geometry, material, object, group ) {
+
+			setMaterial( material );
+
+			var program = setProgram( camera, fog, material, object );
+
+			indexedBufferRenderer.setIndex( geometry.index );
+
+			setupVertexAttributes( material, program, geometry );
+
+			_gl.bindBuffer( _gl.ELEMENT_ARRAY_BUFFER, objects.getAttributeBuffer( geometry.index ) );
+
+			indexedBufferRenderer.setMode( _gl.TRIANGLES );
+
+			indexedBufferRenderer.render( 0, geometry.index.count );
+
+		};
+
 
 		function pushRenderItem( object, geometry, material, z, group ) {
 
