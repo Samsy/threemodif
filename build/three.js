@@ -1,3 +1,4 @@
+
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -17021,6 +17022,8 @@
 
 			}
 
+			// wtf.programs[program.id] = program
+
 			return program;
 
 		};
@@ -17033,6 +17036,8 @@
 				var i = programs.indexOf( program );
 				programs[ i ] = programs[ programs.length - 1 ];
 				programs.pop();
+
+				// delete wtf.programs[program.id]
 
 				// Free WebGL resources
 				program.destroy();
@@ -17095,7 +17100,16 @@
 
 			//
 
+			// if(wtf[buffergeometry.uuid]){
+
+			// 	wtf[buffergeometry.uuid] = 'added twice'
+
+			// 	delete wtf[buffergeometry.uuid]
+
+			// }
+
 			info.memory.geometries --;
+
 
 		}
 
@@ -17181,6 +17195,16 @@
 				}
 
 				geometries[ geometry.id ] = buffergeometry;
+
+				// if(wtf[buffergeometry.uuid]){
+
+				// 	wtf[buffergeometry.uuid] = 'added twice'
+
+				// }else{
+
+				// 	wtf[buffergeometry.uuid] = buffergeometry
+
+				// }
 
 				info.memory.geometries ++;
 
@@ -17505,7 +17529,6 @@
 				context.drawImage( image, 0, 0, canvas.width, canvas.height );
 
 				console.warn( 'THREE.WebGLRenderer: image is not power of two (' + image.width + 'x' + image.height + '). Resized to ' + canvas.width + 'x' + canvas.height, image );
-
 				return canvas;
 
 			}
@@ -20743,6 +20766,9 @@
 
 		};
 
+		
+
+
 		this.renderLIGHT = function (camera, mesh, renderTarget) {
 
 			_infoRender.calls++;
@@ -20769,7 +20795,7 @@
 
 			setMaterial( material );
 
-			var program = setProgram( camera, fog, material, object );
+			var program = setProgram( camera, fog, material, object.mesh );
 
 			indexedBufferRenderer.setIndex( geometry.index );
 
@@ -20983,6 +21009,7 @@
 			}
 
 		}
+
 
 		function renderObjects( renderList, scene, camera, overrideMaterial ) {
 
@@ -21466,7 +21493,7 @@
 			}
 
 
-			// common matrices
+			// common matrices$
 
 			p_uniforms.set( _gl, object, 'modelViewMatrix' );
 			p_uniforms.set( _gl, object, 'normalMatrix' );
