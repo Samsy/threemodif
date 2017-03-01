@@ -20769,7 +20769,8 @@
 		
 
 
-		this.renderLIGHT = function (camera, mesh, renderTarget) {
+		this.renderLIGHT = function (camera, mesh, renderTarget, forceClear) {
+
 
 			_infoRender.calls++;
 
@@ -20795,7 +20796,7 @@
 
 			setMaterial( material );
 
-			var program = setProgram( camera, fog, material, object.mesh );
+			var program = setProgram( camera, fog, material, object );
 
 			indexedBufferRenderer.setIndex( geometry.index );
 
