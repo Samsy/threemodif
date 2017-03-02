@@ -20767,10 +20767,9 @@
 		};
 
 		
-
-
 		this.renderLIGHT = function (camera, mesh, renderTarget, forceClear) {
 
+			_currentMaterialId = - 1;
 
 			_infoRender.calls++;
 
@@ -20781,6 +20780,14 @@
 			}
 
 			this.setRenderTarget( renderTarget );
+
+			if ( this.autoClear || forceClear ) {
+
+				this.clear( this.autoClearColor, this.autoClearDepth, this.autoClearStencil );
+
+			}
+
+			state.setBlending( NoBlending );
 
 			objects.update( mesh );
 
